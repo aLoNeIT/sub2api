@@ -15,7 +15,10 @@ This directory contains files for deploying Sub2API on Linux servers.
 |------|-------------|
 | `docker-compose.yml` | Docker Compose configuration (named volumes) |
 | `docker-compose.local.yml` | Docker Compose configuration (local directories, easy migration) |
+| `docker-compose-custom.yml` | Docker Compose configuration (host-mounted binary, no app image packaging) |
 | `docker-deploy.sh` | **One-click Docker deployment script (recommended)** |
+| `build-and-up-custom.bat` | Windows helper: build frontend/backend in Docker, then start custom compose |
+| `build-and-up-custom.sh` | Linux helper: build frontend/backend in Docker, then start custom compose |
 | `.env.example` | Docker environment variables template |
 | `DOCKER.md` | Docker Hub documentation |
 | `install.sh` | One-click binary installation script |
@@ -105,6 +108,26 @@ docker compose -f docker-compose.local.yml logs -f sub2api
 | **docker-compose.yml** | Named volumes (/var/lib/docker/volumes/) | ⚠️ Requires docker commands | Simple setup, don't need migration |
 
 **Recommendation:** Use `docker-compose.local.yml` (deployed by `docker-deploy.sh`) for easier data management and migration.
+
+### Custom Host-Binary Deployment
+
+If you want Docker Compose to run the app from a host-mounted binary instead of packaging the app into an image, use:
+
+```bash
+# Linux
+./build-and-up-custom.sh
+
+# Windows
+build-and-up-custom.bat
+```
+
+This flow:
+
+1. Builds the frontend in a container.
+2. Builds the Linux backend binary in a container.
+3. Starts `docker-compose-custom.yml`, which mounts `../backend/bin/server` into the runtime container.
+
+You can also pass `build`, `up`, `restart`, `down`, or `logs` to the script.
 
 ### How Auto-Setup Works
 
